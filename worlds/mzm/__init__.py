@@ -1,11 +1,11 @@
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Mapping
 
 from BaseClasses import Tutorial
 import settings
 from worlds.AutoWorld import WebWorld, World
 
-#from .client import MZMClient
+from .client import MZMClient
 from .items import ItemType, item_data_table, MZMItem
 from .locations import full_location_table
 from .options import MZMOptions
@@ -47,7 +47,6 @@ class MZMWorld(World):
     options: MZMOptions
     topology_present = True
 
-    data_version = 0
     web = MZMWeb()
 
     item_name_to_id = {name: data.code for name, data in item_data_table.items()}
@@ -115,3 +114,9 @@ class MZMWorld(World):
         finally:
             if rompath.exists():
                 rompath.unlink()
+
+    def fill_slot_data(self) -> Mapping[str, Any]:
+        return self.options.as_dict(
+            "unknown_items_always_usable",
+            "death_link",
+        )
